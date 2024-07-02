@@ -21,7 +21,7 @@ public class Payment {
     private Integer paymentId;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
     private Order order;
 
     @Column(name = "payment_method", nullable = false)

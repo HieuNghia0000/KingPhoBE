@@ -21,7 +21,7 @@ public class Invoice {
     private Integer invoiceId;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
     private Order order;
 
     @Column(name = "invoice_date", nullable = false)

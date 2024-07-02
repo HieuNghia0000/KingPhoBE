@@ -1,5 +1,7 @@
 package org.application.kingphobe.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.application.kingphobe.dto.PaymentDTO;
 import org.application.kingphobe.model.Payment;
 import org.application.kingphobe.service.PaymentService;
@@ -11,18 +13,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/payments")
+@RequestMapping(value = "/api/payments", produces = "application/json")
+@Tag(name = "Payments")
 public class PaymentController {
 
     @Autowired
     private PaymentService paymentService;
 
     @GetMapping
+    @Operation(summary = "Get all payments")
     public List<Payment> getAllPayments() {
         return paymentService.getAllPayment();
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get payment by ID")
     public ResponseEntity<Payment> getPaymentById(@PathVariable int id) {
         return paymentService.getPaymentById(id)
                 .map(ResponseEntity::ok)
@@ -30,12 +35,14 @@ public class PaymentController {
     }
 
     @PostMapping
+    @Operation(summary = "Create new payment")
     public ResponseEntity<Payment> createPayment(@RequestBody PaymentDTO paymentDTO) {
         Payment createdPayment = paymentService.createPayment(paymentDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPayment);
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update payment")
     public ResponseEntity<Payment> updatePayment(@PathVariable Integer id, @RequestBody PaymentDTO paymentDTO) {
         return paymentService.updatePayment(id, paymentDTO)
                 .map(ResponseEntity::ok)
@@ -43,6 +50,7 @@ public class PaymentController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete payment")
     public ResponseEntity<Void> deletePayment(@PathVariable int id) {
         paymentService.deletePayment(id);
         return ResponseEntity.noContent().build();
