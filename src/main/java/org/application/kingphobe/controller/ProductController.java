@@ -3,10 +3,8 @@ package org.application.kingphobe.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.application.kingphobe.dto.ProductDTO;
-import org.application.kingphobe.model.Product;
 import org.application.kingphobe.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,36 +20,31 @@ public class ProductController {
 
     @GetMapping
     @Operation(summary = "Get all products")
-    public List<Product> getAllProducts() {
-        return productService.getAllProduct();
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get product by id")
-    public ResponseEntity<Product> getProductById(@PathVariable int id) {
-        return productService.getProductById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer id) {
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @PostMapping
     @Operation(summary = "Create new product")
-    public ResponseEntity<Product> createProduct(@RequestBody ProductDTO productDTO) {
-        Product createdProduct = productService.createProduct(productDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
+        return ResponseEntity.ok(productService.saveProduct(productDTO));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update product")
-    public ResponseEntity<Product> updateProduct(@PathVariable Integer id, @RequestBody ProductDTO productDTO) {
-        return productService.updateProduct(id, productDTO)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Integer id, @RequestBody ProductDTO productDTO) {
+        return ResponseEntity.ok(productService.updateProduct(id, productDTO));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete products")
-    public ResponseEntity<Void> deleteProduct(@PathVariable int id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Integer id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,7 +30,10 @@ public class Product {
     private Double price;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", referencedColumnName = "category_id")
+    @JoinColumn(name = "category_id", referencedColumnName = "category_id", nullable = true)
     private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImage> images;
 }
 
