@@ -1,5 +1,6 @@
 package org.application.kingphobe.service;
 
+import org.application.kingphobe.dto.AvatarUpdateDTO;
 import org.application.kingphobe.dto.RegisterDTO;
 import org.application.kingphobe.dto.UpdateDTO;
 import org.application.kingphobe.model.User;
@@ -19,6 +20,8 @@ public interface UserService {
     User createUser(RegisterDTO user);
 
     Optional<User> updateUser(Integer id, UpdateDTO updateDTO);
+
+    Optional<User> updateAvatar(Integer id, AvatarUpdateDTO avatarUpdateDTO);
 
     void deleteUser(int id);
 }

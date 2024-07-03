@@ -3,6 +3,7 @@ package org.application.kingphobe.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.application.kingphobe.dto.AvatarUpdateDTO;
 import org.application.kingphobe.dto.RegisterDTO;
 import org.application.kingphobe.dto.UpdateDTO;
 import org.application.kingphobe.model.User;
@@ -47,6 +48,14 @@ public class UserController {
     @Operation(summary = "Update user")
     public ResponseEntity<User> updateUser(@PathVariable("id") int id, @Valid @RequestBody UpdateDTO updateDTO) {
         Optional<User> optionalUser = userService.updateUser(id, updateDTO);
+
+        return optionalUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("update-avatar/{id}")
+    @Operation(summary = "Update user avatar")
+    public ResponseEntity<User> updateAvatar(@PathVariable("id") int id, @Valid @RequestBody AvatarUpdateDTO avatarUpdateDTO) {
+        Optional<User> optionalUser = userService.updateAvatar(id, avatarUpdateDTO);
 
         return optionalUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }

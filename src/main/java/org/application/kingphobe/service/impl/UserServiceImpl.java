@@ -1,5 +1,6 @@
 package org.application.kingphobe.service.impl;
 
+import org.application.kingphobe.dto.AvatarUpdateDTO;
 import org.application.kingphobe.dto.RegisterDTO;
 import org.application.kingphobe.dto.UpdateDTO;
 import org.application.kingphobe.model.User;
@@ -61,6 +62,19 @@ public class UserServiceImpl implements UserService {
             User user = existingUser.get();
             user.setUsername(updateDTO.getUsername());
             user.setEmail(updateDTO.getEmail());
+            return Optional.of(userRepository.save(user));
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> updateAvatar(Integer id, AvatarUpdateDTO avatarUpdateDTO) {
+        Optional<User> existingUser = getUserById(id);
+
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            user.setAvatar(avatarUpdateDTO.getAvatar());
             return Optional.of(userRepository.save(user));
         }
 
