@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -31,26 +31,17 @@ jobs:
           path: '${{ github.workspace }}/target/*.jar'
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
-  
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
           name: java-app
-      
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E3C0642A723D43E1BE3B9958B76C25DE }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_145CB408039842599E2B92CCCD1B13C7 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B31353F2F64B432684CEE27EBF09B5A2 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -58,5 +49,5 @@ jobs:
         with:
           app-name: 'kingpho-api'
           slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_507FCB9477E844EA8DA74C5FEDC840CF }}
           package: '*.jar'
-          
