@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping(value = "/api/auth", consumes = {"application/json", "application/*+json", "text/json"}, produces = {"text/plain", "application/json", "text/json"})
 @Tag(name = "Authentication")
 public class AuthenticationController {
 

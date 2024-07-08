@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/payments", produces = "application/json")
+@RequestMapping(value = "/api/payments", consumes = {"application/json", "application/*+json", "text/json"}, produces = {"text/plain", "application/json", "text/json"})
 @Tag(name = "Payments")
 public class PaymentController {
 

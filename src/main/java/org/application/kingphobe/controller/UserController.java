@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/api/users", produces = "application/json")
+@RequestMapping(value = "/api/users", consumes = {"application/json", "application/*+json", "text/json"}, produces = {"text/plain", "application/json", "text/json"})
 @Tag(name = "Users")
 public class UserController {
 
