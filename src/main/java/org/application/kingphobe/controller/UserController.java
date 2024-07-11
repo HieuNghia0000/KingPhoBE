@@ -37,6 +37,13 @@ public class UserController {
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/username/{username}")
+    @Operation(summary = "Get user by username")
+    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
+        Optional<User> user = userService.getUserByUsername(username);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping("/register")
     @Operation(summary = "Register new user")
     public ResponseEntity<User> addUser(@Valid @RequestBody RegisterDTO user) {
