@@ -11,5 +11,5 @@ public class CategoryDTO {
     @NotBlank(message = "Category name must not be blank")
     private String name;
 
-    private String description;
+    private String image;
 }

@@ -93,7 +93,7 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductDTO convertToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO();
-        productDTO.setId(product.getProductId().intValue());
+        productDTO.setId(product.getProductId());
         productDTO.setName(product.getName());
         productDTO.setDescription(product.getDescription());
         productDTO.setPrice(product.getPrice());
@@ -112,7 +112,7 @@ public class ProductServiceImpl implements ProductService {
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setId(category.getCategoryId());
         categoryDTO.setName(category.getName());
-        categoryDTO.setDescription(category.getDescription());
+        categoryDTO.setImage(category.getImage());
         return categoryDTO;
     }
 

@@ -31,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = new Category();
 
         category.setName(categoryDTO.getName());
-        category.setDescription(categoryDTO.getDescription());
+        category.setImage(categoryDTO.getImage());
 
         return categoryRepository.save(category);
     }
@@ -42,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         if (existingCategory.isPresent()) {
             existingCategory.get().setName(categoryDTO.getName());
-            existingCategory.get().setDescription(categoryDTO.getDescription());
+            existingCategory.get().setImage(categoryDTO.getImage());
             return Optional.of(categoryRepository.save(existingCategory.get()));
         }
 
