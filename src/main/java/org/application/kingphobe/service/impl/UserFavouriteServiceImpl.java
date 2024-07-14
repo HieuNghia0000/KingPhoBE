@@ -1,8 +1,12 @@
 package org.application.kingphobe.service.impl;
 
 import org.application.kingphobe.dto.UserFavouriteDTO;
+import org.application.kingphobe.model.Product;
+import org.application.kingphobe.model.User;
 import org.application.kingphobe.model.UserFavourites;
+import org.application.kingphobe.repository.ProductRepository;
 import org.application.kingphobe.repository.UserFavouriteRepository;
+import org.application.kingphobe.repository.UserRepository;
 import org.application.kingphobe.service.UserFavouriteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,12 @@ public class UserFavouriteServiceImpl implements UserFavouriteService {
     @Autowired
     private UserFavouriteRepository userFavouriteRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
     @Override
     public UserFavouriteDTO saveUserFavourite(UserFavouriteDTO userFavouriteDTO) {
         UserFavourites userFavourites = convertToEntity(userFavouriteDTO);
@@ -25,18 +35,15 @@ public class UserFavouriteServiceImpl implements UserFavouriteService {
 
     @Override
     public List<UserFavouriteDTO> getUserFavourites(Integer userId) {
-        return userFavouriteRepository.findAll().stream()
-                .filter(fav -> fav.getUser().getUserId().equals(userId))
+        return userFavouriteRepository.findByUserUserId(userId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public UserFavouriteDTO getUserFavourite(Integer userId, Integer productId) {
-        UserFavourites userFavourites = userFavouriteRepository.findAll().stream()
-                .filter(fav -> fav.getUser().getUserId().equals(userId) && fav.getProduct().getProductId().equals(productId))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Favorite not found"));
+        UserFavourites userFavourites = userFavouriteRepository.findByUserUserIdAndProductProductId(userId, productId)
+                .orElseThrow(() -> new RuntimeException("Favourite not found"));
         return convertToDTO(userFavourites);
     }
 
@@ -48,8 +55,17 @@ public class UserFavouriteServiceImpl implements UserFavouriteService {
     private UserFavourites convertToEntity(UserFavouriteDTO userFavouriteDTO) {
         UserFavourites userFavourites = new UserFavourites();
         userFavourites.setId(userFavouriteDTO.getId());
-        // Assuming User and Product entities are already loaded from the database
-        // and set to the userFavourite entity
+
+        // Fetch the User entity from the database
+        User user = userRepository.findById(userFavouriteDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userFavourites.setUser(user);
+
+        // Fetch the Product entity from the database
+        Product product = productRepository.findById(userFavouriteDTO.getProductId())
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        userFavourites.setProduct(product);
+
         userFavourites.setFavorite(userFavouriteDTO.isFavorite());
         return userFavourites;
     }
