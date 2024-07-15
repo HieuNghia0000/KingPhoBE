@@ -1,13 +1,18 @@
 package org.application.kingphobe.service.impl;
 
+import org.application.kingphobe.dto.CartDTO;
 import org.application.kingphobe.model.Cart;
-import org.application.kingphobe.model.CartItem;
-import org.application.kingphobe.repository.CartItemRepository;
+import org.application.kingphobe.model.Product;
+import org.application.kingphobe.model.User;
 import org.application.kingphobe.repository.CartRepository;
+import org.application.kingphobe.repository.ProductRepository;
+import org.application.kingphobe.repository.UserRepository;
 import org.application.kingphobe.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -17,41 +22,57 @@ public class CartServiceImpl implements CartService {
     private CartRepository cartRepository;
 
     @Autowired
-    private CartItemRepository cartItemRepository;
+    private ProductRepository productRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
-    public void addToCart(CartItem cartItem) {
-        Cart cart = cartRepository.findByUser_UserId(cartItem.getCart().getUser().getUserId());
+    public void addToCart(CartDTO cartDTO) {
+        User user = userRepository.findById(cartDTO.getUserId()).orElse(new User());
+        Product product = productRepository.findById(cartDTO.getProductId()).orElse(new Product());
+
+        Cart cart = cartRepository.findByUserAndProduct(user, product);
         if (cart == null) {
-            cart = new Cart();
-            cart.setUser(cartItem.getCart().getUser());
+            cart = Cart.builder()
+                    .user(user)
+                    .product(product)
+                    .quantity(cartDTO.getQuantity())
+                    .createdAt(new Date())
+                    .build();
+        } else {
+            cart.setQuantity(cart.getQuantity() + cartDTO.getQuantity());
+        }
+        cartRepository.save(cart);
+    }
+
+    @Override
+    public List<CartDTO> getCartItems(int userId) {
+        List<Cart> carts = cartRepository.findByUser_UserId(userId);
+        List<CartDTO> cartDTOs = new ArrayList<>();
+        for (Cart cart : carts) {
+            cartDTOs.add(CartDTO.builder()
+                    .cartId(cart.getCartId())
+                    .userId(cart.getUser().getUserId())
+                    .productId(cart.getProduct().getProductId())
+                    .quantity(cart.getQuantity())
+                    .createdAt(cart.getCreatedAt())
+                    .build());
+        }
+        return cartDTOs;
+    }
+
+    @Override
+    public void updateCartItem(CartDTO cartDTO) {
+        Cart cart = cartRepository.findByUser_UserIdAndProduct_ProductId(cartDTO.getUserId(), cartDTO.getProductId());
+        if (cart != null) {
+            cart.setQuantity(cartDTO.getQuantity());
             cartRepository.save(cart);
         }
-        cartItem.setCart(cart);
-        cartItemRepository.save(cartItem);
     }
 
     @Override
-    public List<CartItem> getCartItems(int userId) {
-        Cart cart = cartRepository.findByUser_UserId(userId);
-        if (cart != null) {
-            return cartItemRepository.findByCart_CartId(cart.getCartId());
-        }
-        return null;
-    }
-
-    @Override
-    public void updateCartItem(int userId, CartItem cartItem) {
-        Cart cart = cartRepository.findByUser_UserId(userId);
-        if (cart != null) {
-            List<CartItem> cartItems = cartItemRepository.findByCart_CartId(cart.getCartId());
-            for (CartItem existingCartItem : cartItems) {
-                if (existingCartItem.getProduct().getProductId() == cartItem.getProduct().getProductId()) {
-                    existingCartItem.setQuantity(cartItem.getQuantity());
-                    cartItemRepository.save(existingCartItem);
-                    return;
-                }
-            }
-        }
+    public void deleteCartItem(int cartId) {
+        cartRepository.deleteById(cartId);
     }
 }

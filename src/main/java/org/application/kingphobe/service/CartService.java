@@ -1,11 +1,13 @@
 package org.application.kingphobe.service;
 
-import org.application.kingphobe.model.CartItem;
+
+import org.application.kingphobe.dto.CartDTO;
 
 import java.util.List;
 
 public interface CartService {
-    void addToCart(CartItem cartItem);
-    List<CartItem> getCartItems(int userId);
-    void updateCartItem(int userId, CartItem cartItem);
+    void addToCart(CartDTO cartDTO);
+    List<CartDTO> getCartItems(int userId);
+    void updateCartItem(CartDTO cartDTO);
+    void deleteCartItem(int cartId);
 }

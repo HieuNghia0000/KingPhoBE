@@ -25,6 +25,13 @@ public class Cart {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
+    @OneToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    private Product product;
+
+    @Column(name = "quantity")
+    private int quantity;
+
     @Column(name = "created_at")
     private Date createdAt;
 }
