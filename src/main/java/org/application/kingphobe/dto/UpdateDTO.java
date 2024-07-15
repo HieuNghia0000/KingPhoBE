@@ -13,4 +13,9 @@ public class UpdateDTO {
     @Email
     @NotBlank(message = "Email must not be blank")
     private String email;
+
+    private String fullname;
+    private String phone;
+    private String address;
+    private String avatar;
 }
