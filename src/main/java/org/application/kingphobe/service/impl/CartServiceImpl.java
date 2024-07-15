@@ -1,6 +1,7 @@
 package org.application.kingphobe.service.impl;
 
 import org.application.kingphobe.dto.CartDTO;
+import org.application.kingphobe.dto.UpdateCartDTO;
 import org.application.kingphobe.model.Cart;
 import org.application.kingphobe.model.Product;
 import org.application.kingphobe.model.User;
@@ -63,10 +64,19 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void updateCartItem(CartDTO cartDTO) {
-        Cart cart = cartRepository.findByUser_UserIdAndProduct_ProductId(cartDTO.getUserId(), cartDTO.getProductId());
+    public void updateCartItem(int cartId, CartDTO cartDTO) {
+        Cart cart = cartRepository.findById(cartId).orElse(null);
         if (cart != null) {
             cart.setQuantity(cartDTO.getQuantity());
+            cartRepository.save(cart);
+        }
+    }
+
+    @Override
+    public void updateCartItemByUserIdAndProductId(int userId, int productId, UpdateCartDTO updateCartDTO) {
+        Cart cart = cartRepository.findByUser_UserIdAndProduct_ProductId(userId, productId);
+        if (cart != null) {
+            cart.setQuantity(updateCartDTO.getQuantity());
             cartRepository.save(cart);
         }
     }

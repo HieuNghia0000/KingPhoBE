@@ -3,6 +3,7 @@ package org.application.kingphobe.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.application.kingphobe.dto.CartDTO;
+import org.application.kingphobe.dto.UpdateCartDTO;
 import org.application.kingphobe.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,10 +36,17 @@ public class CartController {
         return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/cart")
+    @PutMapping("/cart/{cartId}")
     @Operation(summary = "Update cart")
-    public ResponseEntity<Void> updateCartItem(@RequestBody CartDTO cartDTO) {
-        cartService.updateCartItem(cartDTO);
+    public ResponseEntity<Void> updateCartItem(@PathVariable int cartId, @RequestBody CartDTO cartDTO) {
+        cartService.updateCartItem(cartId, cartDTO);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/cart/user/{userId}/product/{productId}")
+    @Operation(summary = "Update cart by userId and productId")
+    public ResponseEntity<Void> updateCartItemByUserIdAndProductId(@PathVariable int userId, @PathVariable int productId, @RequestBody UpdateCartDTO updateCartDTO) {
+        cartService.updateCartItemByUserIdAndProductId(userId, productId, updateCartDTO);
         return ResponseEntity.ok().build();
     }
 
